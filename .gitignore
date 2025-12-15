@@ -1,0 +1,55 @@
+# -----------------------------------------------------
+# 1. Project-Specific Generated Data
+# -----------------------------------------------------
+# Vector Database (ChromaDB Storage)
+embeddings_insight_hub/
+embeddings_content_navigator/
+
+# Source Data Files
+data/
+
+
+# -----------------------------------------------------
+# 2. Python Environment and Dependencies
+# -----------------------------------------------------
+# Virtual Environment Directories
+.venv/
+venv/
+env/
+
+# Byte-compiled Python files and cache
+__pycache__/
+*.pyc
+
+# Packaging and Distribution
+dist/
+build/
+*.egg-info/
+
+# -----------------------------------------------------
+# 3. Application-Specific Files
+# -----------------------------------------------------
+.streamlit/
+
+# -----------------------------------------------------
+# 4. Environment Variables and Logs
+# -----------------------------------------------------
+.env
+.flaskenv
+
+# Log files
+*.log
+
+# -----------------------------------------------------
+# 5. Operating System & Editor Files
+# -----------------------------------------------------
+# macOS
+.DS_Store
+
+# Linux/Vim/Emacs temporary files
+*~
+*.swp
+*.swo
+
+# VS Code config (if personal config)
+.vscode/

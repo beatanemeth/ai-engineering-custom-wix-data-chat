@@ -1,0 +1,18 @@
+#
+# Specific Dependencies for the LangChain-RAG Service
+#
+# This file lists the core, direct dependencies required to run only 
+# the Retrieval-Augmented Generation (RAG) and vector database components.
+#
+
+langchain
+langchain-community
+langchain-openai
+chromadb
+sentence-transformers
+langchain-text-splitters
+python-dotenv
+jq
+
+# In case of content_navigator_ai, Streamlit is also required
+streamlit

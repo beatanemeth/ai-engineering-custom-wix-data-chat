@@ -1,0 +1,12 @@
+#
+# Specific Dependencies for the JWT Microservice
+#
+# This file lists the core, direct dependencies needed to run only the 
+# JWT-based authentication and microservice components.
+#
+
+fastapi 
+uvicorn 
+requests 
+pyjwt 
+python-dotenv
