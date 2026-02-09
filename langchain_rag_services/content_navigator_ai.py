@@ -10,11 +10,11 @@ from langchain_core.runnables.history import RunnableWithMessageHistory
 
 # LLM and Embedding Integrations
 from langchain_openai import ChatOpenAI
-from langchain_community.embeddings import SentenceTransformerEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 
 # Community/Third-Party Components
 from langchain_community.document_loaders import JSONLoader
-from langchain_community.vectorstores import Chroma
+from langchain_chroma import Chroma
 from langchain_community.chat_message_histories import ChatMessageHistory
 
 # High-Level Chains (simplified imports for standard RAG components)
@@ -144,7 +144,7 @@ def load_and_prepare_documents(file_path, jq_schema, source_name):
 CONTEXTUALIZE_Q_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
-            "system",
+            "user",
             "Given a chat history and the latest user question, generate a standalone question that can be used to search the vector store. The input and output query must be in **Hungarian**. Do not answer the question, just rephrase it if necessary. If no history exists, return the question as is.",
         ),
         MessagesPlaceholder(variable_name="chat_history"),
@@ -156,7 +156,7 @@ CONTEXTUALIZE_Q_PROMPT = ChatPromptTemplate.from_messages(
 FINAL_ANSWER_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
-            "system",
+            "user",
             """
 **Role:** You are an **Expert Wix Content Assistant** specialized in providing factual information from the 'kiutarakbol.hu' posts and articles.
 **Goal:** Answer the user's question accurately and concisely, drawing ONLY from the provided context.
@@ -291,9 +291,8 @@ def setup_rag_system():
     )
 
     # 2. Embeddings Model Initialization
-    embeddings = SentenceTransformerEmbeddings(
-        model_name=EMBEDDINGS_MODEL,
-        model_kwargs={"device": "cpu"},
+    embeddings = HuggingFaceEmbeddings(
+        model_name=EMBEDDINGS_MODEL, model_kwargs={"device": "cpu"}
     )
 
     # 3. Vector Store Check and Indexing
@@ -396,6 +395,7 @@ def setup_rag_system():
         get_session_history,  # Use the defined function as the history factory
         input_messages_key="input",
         history_messages_key="chat_history",
+        output_messages_key="answer",
     )
 
     st.success("Készen állok a kérdéseidre!")

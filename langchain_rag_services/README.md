@@ -81,12 +81,14 @@ With the virtual environment active, install all necessary packages in a single 
   langchain \
   langchain-community \
   langchain-openai \
+  langchain-huggingface \
+  langchain-chroma \
   chromadb \
   sentence-transformers \
   langchain-text-splitters \
   python-dotenv \
   jq \
-  streamlit # Required if you plan to run ContentNavigatorAI
+  streamlit  # Required if you plan to run ContentNavigatorAI
 ```
 
 ### Run the Application

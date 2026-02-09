@@ -5,12 +5,21 @@
 # the Retrieval-Augmented Generation (RAG) and vector database components.
 #
 
+# Core LangChain
 langchain
 langchain-community
 langchain-openai
+
+# Other LangChain Modules
+langchain-huggingface
+langchain-chroma
+
+# Vector DB and Search
 chromadb
 sentence-transformers
 langchain-text-splitters
+
+# Utilities
 python-dotenv
 jq
 

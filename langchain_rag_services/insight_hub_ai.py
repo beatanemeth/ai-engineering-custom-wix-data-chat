@@ -10,11 +10,11 @@ from langchain_core.runnables.history import RunnableWithMessageHistory
 
 # LLM and Embedding Integrations
 from langchain_openai import ChatOpenAI
-from langchain_community.embeddings import SentenceTransformerEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 
 # Community/Third-Party Components
 from langchain_community.document_loaders import JSONLoader
-from langchain_community.vectorstores import Chroma
+from langchain_chroma import Chroma
 from langchain_community.chat_message_histories import ChatMessageHistory
 
 # High-Level Chains (simplified imports for standard RAG components)
@@ -71,7 +71,7 @@ llm_model = ChatOpenAI(
 )
 
 # 2. Embeddings Model Initialization
-embeddings = SentenceTransformerEmbeddings(
+embeddings = HuggingFaceEmbeddings(
     model_name=EMBEDDINGS_MODEL, model_kwargs={"device": "cpu"}
 )
 
@@ -282,7 +282,7 @@ log_step("--- 💡 Generation Phase (RAG Step-3) ---")
 CONTEXTUALIZE_Q_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
-            "system",
+            "user",
             "Given a chat history and the latest user question, generate a standalone question that can be used to search the vector store. The input and output query must be in **Hungarian**. Do not answer the question, just rephrase it if necessary. If no history exists, return the question as is.",
         ),
         MessagesPlaceholder(variable_name="chat_history"),
@@ -294,7 +294,7 @@ CONTEXTUALIZE_Q_PROMPT = ChatPromptTemplate.from_messages(
 FINAL_ANSWER_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
-            "system",
+            "user",
             """
 **Role:You are an **Expert Archivist and Content Researcher**, specializing in managing and querying the entire content database (Events, Posts, and Articles) of 'kiutarakbol.hu'. You are the definitive authority on past happenings, content details, and the ability to count and list specific content types (event, post, article). Treat yourself as a reliable internal database for a library containing every detai
 **Goal:Answer the user's question accurately, factually, and concisely, relying STRICTLY and ONLY on the provided context.
@@ -361,6 +361,7 @@ chain = RunnableWithMessageHistory(
     lambda session_id: ChatMessageHistory(session_id=session_id),
     input_messages_key="input",
     history_messages_key="chat_history",
+    output_messages_key="answer",
 )
 
 # ---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---
