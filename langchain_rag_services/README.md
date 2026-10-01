@@ -2,13 +2,7 @@
 
 > In case, that you only would like to use this service, follow the steps bellow for the installation.
 
-## Getting Started 🚀
-
-Using a virtual environment (`.venv`) is the best practice for Python projects. It isolates your project's dependencies from your system-wide Python installation, preventing conflicts.
-
-Here is the step-by-step process for setting up your environment and installing dependencies:
-
-## Getting Started 🚀
+## Getting Started
 
 Using a virtual environment (`.venv`) is the best practice for Python projects. It isolates your project's dependencies from your system-wide Python installation, preventing conflicts.
 
@@ -16,7 +10,7 @@ Here is the step-by-step process for setting up your environment and installing 
 
 ### Data Source Requirement
 
-⚠️ **IMPORTANT**:
+**IMPORTANT**:
 
 - You must provide your own custom JSON files (`wix_posts_data.json`, `wix_articles_data.json`, etc.) in the project's `/data` folder.
 - You must also adapt the **`jq_schema`** variables in the code to match the structure of your custom data.
@@ -30,7 +24,8 @@ Here is the step-by-step process for setting up your environment and installing 
 OPENROUTER_API_KEY=sk-or-v1-Your_OpenRouter_API_Key
 ```
 
-⚠️ **Security Tip**: Never commit your `.env` file to version control.
+**Security Tip**:  
+Never commit your `.env` file to version control.
 
 ### Setup Python Virtual Environment
 
