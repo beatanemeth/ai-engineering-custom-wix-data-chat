@@ -1,39 +1,40 @@
-# 🦜 LangChain RAG Project: Unified Custom Data Chat
+# LangChain RAG Project: Unified Custom Data Chat
 
 > An advanced RAG application that builds upon previous LangChain work: [AI Engineering - Study LangChain](https://github.com/beatanemeth/ai-engineering-study-langchain). This project demonstrates **unified indexing** of multiple custom JSON data sources (Wix content) and provides a **stateful, conversational chat** experience constrained to **Hungarian**.
 
-👉 **This project and the engineering experience behind it are discussed in the Medium article**:  
+**This project and the engineering experience behind it are discussed in the Medium article**:  
 [The AI Engineering Challenge: A Three-Step Journey into RAG, LangChain, and Real-World Data](https://medium.com/@beataspace)
 
 <br></br>
 
 ## Table of Contents
 
-1. [Project Overview & Learning Goals](#1-project-overview--learning-goals-)
-2. [Project Folder Structure](#2-project-folder-structure-)
-3. [Architectures Implemented](#3-architectures-implemented-)
-4. [Technical Stack](#4-technical-stack-️)
-5. [Prerequisites](#5-prerequisites-)
-6. [Getting Started](#6-getting-started-)
-7. [Key Architectural Insight](#7-key-architectural-insight-️)
-8. [Resources](#8-resources-)
+1. [Project Overview](#1-project-overview)
+2. [Project Folder Structure](#2-project-folder-structure)
+3. [Architectures Implemented](#3-architectures-implemented)
+4. [Technical Stack](#4-technical-stack)
+5. [Prerequisites](#5-prerequisites)
+6. [Getting Started](#6-getting-started)
+7. [Key Architectural Insight](#7-key-architectural-insight)
+8. [Resources](#8-resources)
    <br></br>
 
-## 1. Project Overview 🎯
+## 1. Project Overview
 
 This repository contains two distinct LangChain RAG services, each specialized for a specific content retrieval and knowledge management strategy based on a real-world use case:
 
 - **[InsightHubAI](/langchain_rag_services/insight_hub_ai.py)** : Acts as an expert assistant for retrieving data from **archive content**. It uses JSON files from the live website: Blog, Articles, and Events.
 - **[ContentNavigatorAI](/langchain_rag_services/content_navigator_ai.py)** : Acts as an expert assistant for **formulating answers** based on a specific knowledge base. It uses JSON files from the live website: Blog and Articles.
 
-### Data Source Note ⚠️
+### Data Source Note
 
 As the administrator of the [source website](https://www.kiutarakbol.hu/) at the time of project construction, I was able to use Wix Velo code to download the necessary JSON files for personal use.
 
-> **IMPORTANT**: To run this project, you must provide your own custom JSON files and adapt the **`jq_schema`** variables in the code to match your specific data structure.
+> **IMPORTANT**:  
+> To run this project, you must provide your own custom JSON files and adapt the **`jq_schema`** variables in the code to match your specific data structure.
 > <br></br>
 
-## 2. Project Folder Structure 📂
+## 2. Project Folder Structure
 
 ```bash
 .
@@ -83,7 +84,7 @@ As the administrator of the [source website](https://www.kiutarakbol.hu/) at the
 
 <br></br>
 
-## 3. Architectures Implemented 🧠
+## 3. Architectures Implemented
 
 This repository provides two distinct, executable services built with LangChain & RAG:
 
@@ -94,7 +95,7 @@ This repository provides two distinct, executable services built with LangChain 
 
 <br></br>
 
-## 4. Technical Stack 🛠️
+## 4. Technical Stack
 
 | Component            | Detail                                                        | Use                                                                           |
 | :------------------- | :------------------------------------------------------------ | :---------------------------------------------------------------------------- |
@@ -109,32 +110,32 @@ This repository provides two distinct, executable services built with LangChain 
 
 <br></br>
 
-## 5 Prerequisites 📦
+## 5 Prerequisites
 
 You must have the following installed and configured:
 
 - **Python 3.10.12+**
-  > ⚠️ **Version Note:** This project was developed and tested using **Python 3.10.12**. While most dependencies will work with newer versions (e.g., Python 3.11/3.12), it is recommended using Python 3.10 or a compatible version to ensure environmental stability.
+  > **Version Note:** This project was developed and tested using **Python 3.10.12**. While most dependencies will work with newer versions (e.g., Python 3.11/3.12), it is recommended using Python 3.10 or a compatible version to ensure environmental stability.
 - An **OpenRouter API Key** (Set as `OPENROUTER_API_KEY` in the `.env` file).
 
 <br></br>
 
-## 6. Getting Started 🚀
+## 6. Getting Started
 
 Following these steps, you will install and run all core components of this project: the data fetching service and both RAG applications.
 
 > **Note:** The setup below assumes you want to **_install all dependencies_** from the root `requirements.txt` file for a full environment setup.
 
-⚠️ **IMPORTANT:** If you want to run **_only one service_**, please refer to the dedicated instructions in these subdirectories:
+**IMPORTANT:** If you want to run **_only one service_**, please refer to the dedicated instructions in these subdirectories:
 
-- README file for **FastAPI/JWT microservice**
-- README file for **LangChain app**
+- [README file for **FastAPI/JWT microservice**](/getData/jwt_microservice/README.md)
+- [README file for **LangChain app**](/langchain_rag_services/README.md)
 
 ---
 
 ### 6.1. Data Source Requirement
 
-⚠️ **IMPORTANT:** As noted in the Project Overview, you must provide your own custom JSON files (`wix_posts_data.json`, `wix_articles_data.json`, etc.) in the project's `/data` folder.
+**IMPORTANT:** As noted in the Project Overview, you must provide your own custom JSON files (`wix_posts_data.json`, `wix_articles_data.json`, etc.) in the project's `/data` folder.
 
 You must also adapt the `jq_schema` variables in the LangChain application code to match the structure of your custom data.
 
@@ -156,7 +157,8 @@ Populate the file with your environment keys. The required variables for all ser
 - `JWT_SUBJECT_*` values (e.g., `JWT_SUBJECT_EVENTS`): The subject identifiers for each service type.
 - `WIX_*_ENDPOINT` values (e.g., `WIX_EVENTS_ENDPOINT`): The full URL for each endpoint you want to call.
 
-⚠️ **Security Tip:** Never commit your `.env` file to version control.
+**Security Tip:**  
+Never commit your `.env` file to version control.
 
 ---
 
@@ -218,7 +220,7 @@ pip install -r requirements.txt
 
 ---
 
-### 6.6. Run the Applications 🚀
+### 6.6. Run the Applications
 
 You will typically run the FastAPI microservice first to fetch the data, and then run the RAG applications to use the data.
 
@@ -271,7 +273,7 @@ Your command prompt will return to its default state, and the environment name `
 
 <br></br>
 
-## 7. Key Architectural Insight 🏗️
+## 7. Key Architectural Insight
 
 During development, two RAG applications were evaluated using the same LLM, vector store, and retriever strategies, yet they produced noticeably different results.
 
@@ -292,7 +294,7 @@ This led to a key realization:
 Despite experimenting with multiple retriever strategies (Similarity Search, MMR, Self-Querying), none reliably solved questions better suited for structured queries or data aggregation. The issue was not retriever tuning or chunk size, but an architectural mismatch between the problem and the abstraction.
 <br></br>
 
-## 8. Resources 📚
+## 8. Resources
 
 [Get started with Chroma vector stor](https://docs.langchain.com/oss/python/integrations/vectorstores/chroma)
 

@@ -1,8 +1,8 @@
-# 🧠 The AI Engineering Challenge: Technical Notes
+# The AI Engineering Challenge: Technical Notes
 
 This document provides a deep dive into the theoretical concepts, architecture, and cost considerations for building the **ContentNavigatorAI** RAG system.
 
-## 🛠️ Theoretical Considerations
+## Theoretical Considerations
 
 ### 1. The RAG Acronym Paradox
 
@@ -32,17 +32,17 @@ Taken together, the acronym order (RAG) is runtime-focused, while the system bui
 The listed order of components also follows the steps in the Augmentation (A) / Initialization phase of a RAG system.
 
 ![The RAG Build Phase: From Raw Text to Vector Index](/assets/ai_engineering_rag-build-phase.drawio.png)  
-🖼️ open the image in a separate window:
+open the image in a separate window:
 [The RAG Build Phase: From Raw Text to Vector Index](/assets/ai_engineering_rag-build-phase.drawio.png)
 
-### A. CUSTOM DATA 📝
+### A. CUSTOM DATA
 
-#### 🔧 **Example Source**: Uploaded PDF / JSON / etc. files; or other data sources.
+#### **Example Source**: Uploaded PDF / JSON / etc. files; or other data sources.
 
-#### 💡 **Example Custom Data**:
+#### **Example Custom Data**:
 
 ```txt
-✅ 1. PROVIDED CUSTOM TEXT
+1. PROVIDED CUSTOM TEXT
 
 The hippocampus (pl.: hippocampi; via Latin from Greek ἱππόκαμπος, 'seahorse'), also hippocampus proper, is a major component of the brain of humans and many other vertebrates. In the human brain the hippocampus, the dentate gyrus, and the subiculum are components of the hippocampal formation located in the limbic system. The hippocampus plays important roles in the consolidation of information from short-term memory to long-term memory, and in spatial memory that enables navigation. In humans and other primates the hippocampus is located in the archicortex, one of the three regions of allocortex, in each hemisphere with direct neural projections to, and reciprocal indirect projections from the neocortex. The hippocampus, as the medial pallium, is a structure found in all vertebrates.
 
@@ -51,13 +51,13 @@ The hippocampus (pl.: hippocampi; via Latin from Greek ἱππόκαμπος, 's
 
 [example text source: Wikipedia](https://en.wikipedia.org/wiki/Hippocampus)
 
-### B. TEXT SPLITTER ✂️
+### B. TEXT SPLITTER
 
-#### 🔧 **Example Tool**:
+#### **Example Tool**:
 
 `RecursiveCharacterTextSplitter`
 
-#### ⚙️ **How it Works**:
+#### **How it Works**:
 
 It creates chunks from the original text based on defined parameters:
 
@@ -86,35 +86,35 @@ This visuals looks like:
 
 NOTE: Overlap prevents meaning loss at chunk boundaries.
 
-#### 💡 **Example Chunk**:
+#### **Example Chunk**:
 
 ```txt
 [Chunk 1]
 The hippocampus (pl.: hippocampi; via Latin from Greek ἱππόκαμπος, 'seahorse'), also hippocampus proper, is a major component of the brain of humans and many other vertebrates. In the human brain the hippocampus, the dentate gyrus, and the subiculum are components of the hippocampal formation located in the limbic system. The hippocampus plays important roles in the consolidation of information from short-term memory to long-term memory, and in spatial memory that enables navigation. In humans and other primates the hippocampus is located in the archicortex, one of the three regions of allocortex, in each hemisphere with direct neural projections to, and reciprocal indirect projections from the neocortex. The hippocampus, as the medial pallium, is a structure found in all vertebrates.
 ```
 
-#### 🧠 **Know-How**:
+#### **Know-How**:
 
 Chunk size does not affect the total text embedded, but it affects **retrieval quality** and **token costs** (smaller chunks = lower token input cost per retrieval).
 
 **Why smaller chunks?** Better retrieval accuracy, less irrelevant text given to the model, lower token costs.  
 **Typical Sizes**: Small (200–300 tokens), Medium (400–800 tokens), Large (1000+ tokens).
 
-### C. EMBEDDING MODEL 🔬
+### C. EMBEDDING MODEL
 
-#### 🔧 **Example Tool**: `sentence-transformers/all-MiniLM-L6-v2`
+#### **Example Tool**: `sentence-transformers/all-MiniLM-L6-v2`
 
 - **Characteristics**: Outputs a **384-dimensional vector**, with values (floating-point numbers) typically **between -1 and 1**.  
   NOTE: Each embedding model has its own characteristics!
 
-#### ⚙️ **How it Works**:
+#### **How it Works**:
 
 - **Chunks** are **TOKENIZED** (happens once per document ingestion).  
   **Why tokenize?** An embedding model's job is to turn text into a 'meaning vector.' To do that, it must first convert human-readable text into a numerical form the model understands.
 - Those tokens are then **VECTORIZED**.  
   **Semantic Fingerprint**: Chunks that mean similar things end up with similar vectors and are stored in nearby positions in the vector space.
 
-#### 💡 **Example Vector**:
+#### **Example Vector**:
 
 (Visual simulation of the first 30 values for Chunk 1)
 
@@ -131,7 +131,7 @@ Vector for Chunk 1 (384 dimensions):
 
 NOTE: Each chunk has 384 dimensions!
 
-#### 🧠 **Know-How**:
+#### **Know-How**:
 
 **What are vectors?**  
  A vector is simply:
@@ -198,9 +198,9 @@ Might be:
 
 ### D. VECTOR DB 🗄️
 
-#### 🔧 **Example Tool**: `Chroma`
+#### **Example Tool**: `Chroma`
 
-#### ⚙️ **How it Works**:
+#### **How it Works**:
 
 - **Store**: Chroma stores the `id`, the `embedding` (the 384-dim vector), and `metadata` for each chunk.  
   Chroma stores embeddings in a columnar vector index on disk:
@@ -215,7 +215,7 @@ collection/
 
 - **Retrieval**: Chroma performs a **vector similarity** search (_cosine similarity_) between the query's embedding and every stored vector.
 
-#### 💡 **Example Document Structure (Chroma)**:
+#### **Example Document Structure (Chroma)**:
 
 ```json
 {
@@ -231,11 +231,11 @@ collection/
 
 <br></br>
 
-## Architecture - Prototype vs Production 🏗️
+## Architecture - Prototype vs Production
 
 This section outlines the cost and complexity difference between the local study project and a scalable, cloud-hosted client solution.
 
-| Feature ⚙️      | Prototype (Study Project)                               | 🚀 Production (Client Scenario)                                         |
+| Feature         | Prototype (Study Project)                               | Production (Client Scenario)                                            |
 | --------------- | ------------------------------------------------------- | ----------------------------------------------------------------------- |
 | Data Source     | One-time downloaded `JSON` files (static snapshot).     | Dynamic fetch and update (`Cloud Scheduler` + Incremental Indexing).    |
 | FastAPI Service | Stored and run locally.                                 | `Cloud Run` (Scalable, containerized, serverless hosting).              |
@@ -245,11 +245,11 @@ This section outlines the cost and complexity difference between the local study
 
 <br></br>
 
-## 💰 Operational Costs and Scalability Considerations
+## Operational Costs and Scalability Considerations
 
 When scaling to production, four main cost categories appear. These costs behave differently: some scale with user traffic, others with data size.
 
-### What Costs Exist in a System Like InsightHubAI or ContentNavigatorAI? 📏
+### What Costs Exist in a System Like InsightHubAI or ContentNavigatorAI?
 
 | Cost Category            | Behavior                         | Primary Drivers                                                                                          |
 | ------------------------ | -------------------------------- | -------------------------------------------------------------------------------------------------------- |
@@ -260,7 +260,7 @@ When scaling to production, four main cost categories appear. These costs behave
 
 ---
 
-### How Do You Choose LLM, Embeddings, Vector DB? 📏
+### How Do You Choose LLM, Embeddings, Vector DB?
 
 #### Choose the LLM based on:
 
@@ -296,14 +296,14 @@ Weaviate → strong hybrid search
 
 ---
 
-### LLM Query Flow and Token Cost (Visualized) 📏
+### LLM Query Flow and Token Cost (Visualized)
 
 ![How Tokens Flow Through a RAG System](./assets/ai_engineering_token-flow.drawio.png)
 
-🖼️ open the image in a separate window:
+open the image in a separate window:
 [How Tokens Flow Through a RAG System](/assets/ai_engineering_token-flow.drawio.png)
 
-🪜 **Step A** — User Query
+**Step A** — User Query
 
 ```txt
 “Where is the hippocampus located in humans?”
@@ -320,7 +320,7 @@ query_embedding = [0.05, -0.22, 0.91, ...] (384 dimensions)
 2. LLM
    Tokenizes the user's question --> BILLABLE (user question)
 
-🪜 **Step B** — Vector similarity search
+**Step B** — Vector similarity search
 
 Chroma does:
 
@@ -341,7 +341,7 @@ Retrieved text:
 "In humans and other primates the hippocampus is located in the archicortex, ..."
 ```
 
-🪜 **Step C** — LLM receives the retrieved chunks (text) and system prompt:
+**Step C** — LLM receives the retrieved chunks (text) and system prompt:
 
 Now, it has a whole picture:
 
@@ -356,7 +356,7 @@ System prompt:
 "Answer based only on the context."
 ```
 
-🪜 **Step D** — LLM generates the final answer
+**Step D** — LLM generates the final answer
 
 The LLM does not look at vectors.
 It only uses the text retrieved using the vectors.
@@ -369,27 +369,27 @@ The hippocampus is located in the archicortex in each hemisphere of the human br
 
 ---
 
-### Estimating Costs (Theoretical) 📏
+### Estimating Costs (Theoretical)
 
-#### 🤔 MLL
+#### MLL
 
-🪜 **Step 1** - Estimate retrieved context size  
+**Step 1** - Estimate retrieved context size  
 Suppose the retriever returns 3 chunks, each roughly 120 words.  
 That corresponds to approximately 180 tokens per chunk.
 
 - Retrieved context: 3 × 180 ≈ 540 tokens
 
-🪜 **Step 2** - Measure system prompt size  
+**Step 2** - Measure system prompt size  
 The system prompt defined in the code can be measured using an online token calculator.
 
 - System prompt: ≈ 200 tokens
 
-🪜 **Step 3** - Estimate user input  
+**Step 3** - Estimate user input  
 Try 3–5 hypothetical user questions (short, medium, conversational).
 
 - User prompt: ≈ 15–40 tokens
 
-🪜 **Step 4** - Estimate output length
+**Step 4** - Estimate output length
 
 - Model answer: ≈ 250 tokens
 
@@ -430,11 +430,11 @@ What this estimation does not capture (by design):
 
 These belong to production monitoring and post-launch optimization, not early-stage architectural reasoning.
 
-#### 🤔 EMBEDDING MODEL
+#### EMBEDDING MODEL
 
 Even though embeddings are "one-time," it is still useful to estimate their impact.
 
-🪜 **Step 1** - Estimate total text size  
+**Step 1** - Estimate total text size  
 Example:
 500 blog posts
 Average length ≈ 1,200 tokens
@@ -450,7 +450,7 @@ Exact tokenization is not required. Rough heuristics are sufficient:
 
 These are practical approximations, not strict rules.
 
-🪜 **Step 2** - Estimate embedding throughput  
+**Step 2** - Estimate embedding throughput  
 For a typical MiniLM model:
 
 - CPU: ~500–2,000 tokens/sec
@@ -460,10 +460,10 @@ For a typical MiniLM model:
 600,000 tokens ÷ 2,000 tokens/sec ≈ 5 minutes
 ```
 
-🪜 **Step 3** - Estimate storage cost  
+**Step 3** - Estimate storage cost  
 See the following paragraph.
 
-#### 🤔 VECTOR DB
+#### VECTOR DB
 
 The larger the dimension of the embedding (e.g., sentence-transformers/all-MiniLM-L6-v2 uses a 384-dimensional vector, other embedding models, e.g., 768), the larger the vector, the more space is taken in the DB.
 
@@ -488,7 +488,7 @@ If you use 1536 dimensions (4× bigger):
 
 If your DB is huge (millions of chunks), dimension matters a LOT for cost + performance.
 
-#### 🤔 CLOUD INFRASTRUCTURE
+#### CLOUD INFRASTRUCTURE
 
 In a cloud setup, infrastructure costs may include:
 
@@ -501,9 +501,9 @@ Serverless platforms significantly reduce costs by scaling to zero when idle.
 
 ---
 
-### Putting Numbers on it: ContentNavigatorAI 💰
+### Putting Numbers on it: ContentNavigatorAI
 
-⚙️ PROTOTYPE
+PROTOTYPE
 
 - LLM: free-tier model
 - Embedding model: sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
@@ -512,7 +512,7 @@ Serverless platforms significantly reduce costs by scaling to zero when idle.
 
 Operational cost: effectively zero; only the developers' efforts would incur costs.
 
-🚀 PRODUCTION  
+PRODUCTION  
 Architecture assumptions:
 
 - LLM: GPT-4o
@@ -532,9 +532,9 @@ At higher traffic, LLM usage becomes the dominant cost - but it scales linea
 
 Overview:
 
-| Scenario      | Operational Cost                       | Developer Cost                                                                          |
-| ------------- | -------------------------------------- | --------------------------------------------------------------------------------------- |
-| ⚙️ Prototype  | Effectively zero (local, free models). | 100% of the project's expense, covering design, engineering, and data preparation time. |
-| 🚀 Production | Under $15/month (low traffic).         | Cost of building a robust, scalable, and optimized architecture.                        |
+| Scenario   | Operational Cost                       | Developer Cost                                                                          |
+| ---------- | -------------------------------------- | --------------------------------------------------------------------------------------- |
+| Prototype  | Effectively zero (local, free models). | 100% of the project's expense, covering design, engineering, and data preparation time. |
+| Production | Under $15/month (low traffic).         | Cost of building a robust, scalable, and optimized architecture.                        |
 
 <br></br>
